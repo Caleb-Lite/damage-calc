@@ -240,7 +240,7 @@ function placeBsBtn() {
 $(".mode").change(function () {
 	var params = new URLSearchParams(window.location.search);
 	var modeId = $(this).attr("id");
-	if (modeId === "one-vs-one") {
+	if (modeId === "one-vs-all") {
 		params.delete('mode');
 	} else {
 		params.set('mode', modeId);
@@ -305,8 +305,8 @@ var dtHeight, dtWidth;
 $(document).ready(function () {
 	var params = new URLSearchParams(window.location.search);
 	window.mode = params.get("mode");
-	if (!window.mode || (window.mode !== "one-vs-one" && window.mode !== "one-vs-all" && window.mode !== "all-vs-one")) {
-		window.mode = "one-vs-one";
+	if (!window.mode || (window.mode !== "one-vs-all" && window.mode !== "all-vs-one")) {
+		window.mode = "one-vs-all";
 	}
 
 	$("#" + mode).prop("checked", true);

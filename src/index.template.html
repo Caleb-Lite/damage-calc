@@ -958,7 +958,15 @@
                 path = './' + path;
             }
 
-            return window.__ensureModule(path);
+            // Handle directory imports by trying /index if the exact path doesn't exist
+            // This mimics Node.js behavior where require('./data') resolves to './data/index'
+            if (window.__modules[path]) {
+                return window.__modules[path];
+            } else if (window.__modules[path + '/index']) {
+                return window.__modules[path + '/index'];
+            } else {
+                return window.__ensureModule(path);
+            }
         };
 
         // Helper to set current module before loading a script

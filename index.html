@@ -914,15 +914,65 @@
     <script type="text/javascript" src="src/js/vendor/select2/select2.min.js"></script>
     <script type="text/javascript" src="src/js/vendor/url-search-params-0.1.2.min.js"></script>
     <script type="text/javascript">
-        this.__createBinding = function(o, m, k, k2) {
-            if (k2 === undefined) k2 = k;
-            o[k2] = m[k];
-        };
-        var calc = exports = {};
-        function require() { return exports; };
+        // Module system for CommonJS-style modules
+        var __modules = {};
+        var __currentModule = './index';
+
+        // Ensure current module exists
+        function __ensureModule(path) {
+            if (!__modules[path]) {
+                __modules[path] = { __esModule: true };
+            }
+            return __modules[path];
+        }
+
+        // Get the exports object for current module
+        function __getCurrentExports() {
+            return __ensureModule(__currentModule);
+        }
+
+        // Make exports work as a variable that each module can write to
+        Object.defineProperty(this, 'exports', {
+            get: function() { return __getCurrentExports(); },
+            set: function(val) {
+                var current = __currentModule;
+                __modules[current] = val;
+                if (val && typeof val === 'object' && !val.__esModule) {
+                    val.__esModule = true;
+                }
+            },
+            configurable: true
+        });
+
+        // Require function that looks up modules
+        function require(path) {
+            // Normalize path
+            var normalized = path
+                .replace(/^\.\//, '')  // Remove leading ./
+                .replace(/\.js$/, ''); // Remove .js extension
+
+            // Add leading ./ if not present
+            if (normalized.charAt(0) !== '.') {
+                normalized = './' + normalized;
+            }
+
+            return __ensureModule(normalized);
+        }
+
+        // Helper to set current module before loading a script
+        function __setModule(path) {
+            __currentModule = path;
+            __ensureModule(path);
+        }
+
+        // Initialize the main calc module
+        var calc = __ensureModule('./index');
     </script>
+    <script>__setModule('./util');</script>
     <script type="text/javascript" src="calc/dist/util.js"></script>
+    <script>__setModule('./stats');</script>
     <script type="text/javascript" src="calc/dist/stats.js"></script>
+    <script>__setModule('./data/species');</script>
     <script type="text/javascript" src="calc/dist/data/species.js"></script>
     <script type="text/javascript" src="src/js/data/sets/gen9.js"></script>
     <script type="text/javascript" src="src/js/data/sets/gen8.js"></script>
@@ -933,27 +983,56 @@
     <script type="text/javascript" src="src/js/data/sets/gen3.js"></script>
     <script type="text/javascript" src="src/js/data/sets/gen2.js"></script>
     <script type="text/javascript" src="src/js/data/sets/gen1.js"></script>
+    <script>__setModule('./data/types');</script>
     <script type="text/javascript" src="calc/dist/data/types.js"></script>
+    <script>__setModule('./data/natures');</script>
     <script type="text/javascript" src="calc/dist/data/natures.js"></script>
+    <script>__setModule('./data/abilities');</script>
     <script type="text/javascript" src="calc/dist/data/abilities.js"></script>
+    <script>__setModule('./data/moves');</script>
     <script type="text/javascript" src="calc/dist/data/moves.js"></script>
+    <script>__setModule('./data/items');</script>
     <script type="text/javascript" src="calc/dist/data/items.js"></script>
+    <script>__setModule('./data/index');</script>
     <script type="text/javascript" src="calc/dist/data/index.js"></script>
+    <script>__setModule('./move');</script>
     <script type="text/javascript" src="calc/dist/move.js"></script>
+    <script>__setModule('./pokemon');</script>
     <script type="text/javascript" src="calc/dist/pokemon.js"></script>
+    <script>__setModule('./field');</script>
     <script type="text/javascript" src="calc/dist/field.js"></script>
+    <script>__setModule('./items');</script>
     <script type="text/javascript" src="calc/dist/items.js"></script>
+    <script>__setModule('./mechanics/util');</script>
     <script type="text/javascript" src="calc/dist/mechanics/util.js"></script>
+    <script>__setModule('./mechanics/gen789');</script>
     <script type="text/javascript" src="calc/dist/mechanics/gen789.js"></script>
+    <script>__setModule('./mechanics/gen56');</script>
     <script type="text/javascript" src="calc/dist/mechanics/gen56.js"></script>
+    <script>__setModule('./mechanics/gen4');</script>
     <script type="text/javascript" src="calc/dist/mechanics/gen4.js"></script>
+    <script>__setModule('./mechanics/gen3');</script>
     <script type="text/javascript" src="calc/dist/mechanics/gen3.js"></script>
+    <script>__setModule('./mechanics/gen12');</script>
     <script type="text/javascript" src="calc/dist/mechanics/gen12.js"></script>
+    <script>__setModule('./calc');</script>
     <script type="text/javascript" src="calc/dist/calc.js"></script>
+    <script>__setModule('./desc');</script>
     <script type="text/javascript" src="calc/dist/desc.js"></script>
+    <script>__setModule('./result');</script>
     <script type="text/javascript" src="calc/dist/result.js"></script>
+    <script>__setModule('./adaptable');</script>
     <script type="text/javascript" src="calc/dist/adaptable.js"></script>
+    <script>__setModule('./index');</script>
     <script type="text/javascript" src="calc/dist/index.js"></script>
+    <script>
+        // After all modules loaded, copy main exports to calc global
+        for (var key in __modules['./index']) {
+            if (key !== '__esModule') {
+                calc[key] = __modules['./index'][key];
+            }
+        }
+    </script>
     <script type="text/javascript" src="src/js/shared_controls.js"></script>
     <script type="text/javascript" src="src/js/honkalculate_controls.js"></script>
 

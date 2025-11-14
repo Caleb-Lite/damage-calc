@@ -917,6 +917,7 @@
         // Module system for CommonJS-style modules
         var __modules = {};
         var __currentModule = './index';
+        var exports;  // Will be set before each script loads
 
         // Ensure current module exists
         function __ensureModule(path) {
@@ -925,24 +926,6 @@
             }
             return __modules[path];
         }
-
-        // Get the exports object for current module
-        function __getCurrentExports() {
-            return __ensureModule(__currentModule);
-        }
-
-        // Make exports work as a variable that each module can write to
-        Object.defineProperty(this, 'exports', {
-            get: function() { return __getCurrentExports(); },
-            set: function(val) {
-                var current = __currentModule;
-                __modules[current] = val;
-                if (val && typeof val === 'object' && !val.__esModule) {
-                    val.__esModule = true;
-                }
-            },
-            configurable: true
-        });
 
         // Require function that looks up modules
         function require(path) {
@@ -962,11 +945,12 @@
         // Helper to set current module before loading a script
         function __setModule(path) {
             __currentModule = path;
-            __ensureModule(path);
+            exports = __ensureModule(path);
         }
 
-        // Initialize the main calc module
+        // Initialize the main calc module and calc global
         var calc = __ensureModule('./index');
+        __setModule('./index');
     </script>
     <script>__setModule('./util');</script>
     <script type="text/javascript" src="calc/dist/util.js"></script>
@@ -1025,14 +1009,6 @@
     <script type="text/javascript" src="calc/dist/adaptable.js"></script>
     <script>__setModule('./index');</script>
     <script type="text/javascript" src="calc/dist/index.js"></script>
-    <script>
-        // After all modules loaded, copy main exports to calc global
-        for (var key in __modules['./index']) {
-            if (key !== '__esModule') {
-                calc[key] = __modules['./index'][key];
-            }
-        }
-    </script>
     <script type="text/javascript" src="src/js/shared_controls.js"></script>
     <script type="text/javascript" src="src/js/honkalculate_controls.js"></script>
 

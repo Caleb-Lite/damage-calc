@@ -134,7 +134,6 @@ html, body {
     color: black;
     margin: 0;
     padding: 0;
-    min-width: 100em;
 }
 a {
     color: #58a6ff;
@@ -527,4 +526,130 @@ table.field {
 .extraSetItems,
 .extraSetMoves {
     width: 100%;
+}
+
+/* Mobile responsive styles */
+@media screen and (max-width: 768px) {
+    .header-inner {
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .header .nav {
+        padding: 10px 0;
+        float: none;
+        text-align: center;
+    }
+
+    .header .nav-play {
+        padding: 10px 0;
+        float: none;
+        text-align: center;
+    }
+
+    .nav, .nav li, .nav-play, .nav-play li {
+        float: none;
+        display: inline-block;
+    }
+
+    .nav .button img {
+        position: static;
+        display: block;
+        margin: 0 auto 5px;
+    }
+
+    .wrapper {
+        padding: 0 10px;
+        max-width: 100%;
+    }
+
+    .panel {
+        float: none;
+        width: 100% !important;
+        max-width: 100%;
+        margin: 10px 0;
+    }
+
+    .poke-info, .field-info, .poke-import {
+        width: 100% !important;
+        max-width: 100%;
+    }
+
+    .move-result-group {
+        min-width: auto;
+        margin: 1em 0 2em;
+    }
+
+    .move-result-subgroup {
+        float: none;
+        width: 100%;
+    }
+
+    .holder-0 {
+        position: static;
+        width: 100%;
+    }
+
+    .title-text {
+        font-size: 1.2em;
+        display: block;
+        margin: 0.5em 0;
+    }
+
+    .genSelection, .modeSelection {
+        display: block;
+        margin: 10px 0;
+        top: 0;
+    }
+
+    .btn {
+        font-size: 0.9em;
+        padding: 6px 4px;
+    }
+
+    table {
+        font-size: 0.9em;
+    }
+
+    .info-selectors select {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .move-selector {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .select2-container .select2-choice > .select2-chosen {
+        max-width: 100%;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .btn {
+        font-size: 0.8em;
+        padding: 4px 2px;
+    }
+
+    .btn-wide, .btn-xwide, .btn-xxwide, .btn-xxxwide {
+        width: auto;
+        padding: 4px 8px;
+    }
+
+    table {
+        font-size: 0.8em;
+    }
+
+    .poke-info input:not([type]), .poke-info input[type="text"], .poke-info span {
+        width: 2em;
+    }
+
+    .title-text {
+        font-size: 1em;
+    }
+
+    .field-info .btn {
+        font-size: 0.7em;
+    }
 }

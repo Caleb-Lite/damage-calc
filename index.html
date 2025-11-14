@@ -915,20 +915,19 @@
     <script type="text/javascript" src="src/js/vendor/url-search-params-0.1.2.min.js"></script>
     <script type="text/javascript">
         // Module system for CommonJS-style modules
-        var __modules = {};
-        var __currentModule = './index';
-        var exports;  // Will be set before each script loads
+        window.__modules = {};
+        window.__currentModule = './index';
 
         // Ensure current module exists
-        function __ensureModule(path) {
-            if (!__modules[path]) {
-                __modules[path] = { __esModule: true };
+        window.__ensureModule = function(path) {
+            if (!window.__modules[path]) {
+                window.__modules[path] = { __esModule: true };
             }
-            return __modules[path];
-        }
+            return window.__modules[path];
+        };
 
         // Require function that looks up modules
-        function require(path) {
+        window.require = function(path) {
             // Normalize path
             var normalized = path
                 .replace(/^\.\//, '')  // Remove leading ./
@@ -939,18 +938,18 @@
                 normalized = './' + normalized;
             }
 
-            return __ensureModule(normalized);
-        }
+            return window.__ensureModule(normalized);
+        };
 
         // Helper to set current module before loading a script
-        function __setModule(path) {
-            __currentModule = path;
-            exports = __ensureModule(path);
-        }
+        window.__setModule = function(path) {
+            window.__currentModule = path;
+            window.exports = window.__ensureModule(path);
+        };
 
         // Initialize the main calc module and calc global
-        var calc = __ensureModule('./index');
-        __setModule('./index');
+        window.calc = window.__ensureModule('./index');
+        window.__setModule('./index');
     </script>
     <script>__setModule('./util');</script>
     <script type="text/javascript" src="calc/dist/util.js"></script>

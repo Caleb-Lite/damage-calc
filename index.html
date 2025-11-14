@@ -928,17 +928,37 @@
 
         // Require function that looks up modules
         window.require = function(path) {
-            // Normalize path
-            var normalized = path
-                .replace(/^\.\//, '')  // Remove leading ./
-                .replace(/\.js$/, ''); // Remove .js extension
+            // Remove .js extension if present
+            path = path.replace(/\.js$/, '');
 
-            // Add leading ./ if not present
-            if (normalized.charAt(0) !== '.') {
-                normalized = './' + normalized;
+            // If path starts with ./ or ../, resolve it relative to current module
+            if (path.charAt(0) === '.') {
+                // Get current module directory
+                var currentDir = window.__currentModule.substring(0, window.__currentModule.lastIndexOf('/'));
+                if (currentDir === '') currentDir = '.';
+
+                // Split path into parts
+                var parts = currentDir.split('/').concat(path.split('/'));
+                var resolved = [];
+
+                // Resolve . and .. references
+                for (var i = 0; i < parts.length; i++) {
+                    if (parts[i] === '..') {
+                        if (resolved.length > 0 && resolved[resolved.length - 1] !== '..') {
+                            resolved.pop();
+                        }
+                    } else if (parts[i] !== '.' && parts[i] !== '') {
+                        resolved.push(parts[i]);
+                    }
+                }
+
+                path = './' + resolved.join('/');
+            } else if (path.charAt(0) !== '.') {
+                // Add leading ./ for non-relative paths
+                path = './' + path;
             }
 
-            return window.__ensureModule(normalized);
+            return window.__ensureModule(path);
         };
 
         // Helper to set current module before loading a script

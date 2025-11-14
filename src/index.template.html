@@ -914,15 +914,68 @@
     <script type="text/javascript" src="./js/vendor/select2/select2.min.js"></script>
     <script type="text/javascript" src="./js/vendor/url-search-params-0.1.2.min.js"></script>
     <script type="text/javascript">
-        this.__createBinding = function(o, m, k, k2) {
-            if (k2 === undefined) k2 = k;
-            o[k2] = m[k];
+        // Module system for CommonJS-style modules
+        window.__modules = {};
+        window.__currentModule = './index';
+
+        // Ensure current module exists
+        window.__ensureModule = function(path) {
+            if (!window.__modules[path]) {
+                window.__modules[path] = { __esModule: true };
+            }
+            return window.__modules[path];
         };
-        var calc = exports = {};
-        function require() { return exports; };
+
+        // Require function that looks up modules
+        window.require = function(path) {
+            // Remove .js extension if present
+            path = path.replace(/\.js$/, '');
+
+            // If path starts with ./ or ../, resolve it relative to current module
+            if (path.charAt(0) === '.') {
+                // Get current module directory
+                var currentDir = window.__currentModule.substring(0, window.__currentModule.lastIndexOf('/'));
+                if (currentDir === '') currentDir = '.';
+
+                // Split path into parts
+                var parts = currentDir.split('/').concat(path.split('/'));
+                var resolved = [];
+
+                // Resolve . and .. references
+                for (var i = 0; i < parts.length; i++) {
+                    if (parts[i] === '..') {
+                        if (resolved.length > 0 && resolved[resolved.length - 1] !== '..') {
+                            resolved.pop();
+                        }
+                    } else if (parts[i] !== '.' && parts[i] !== '') {
+                        resolved.push(parts[i]);
+                    }
+                }
+
+                path = './' + resolved.join('/');
+            } else if (path.charAt(0) !== '.') {
+                // Add leading ./ for non-relative paths
+                path = './' + path;
+            }
+
+            return window.__ensureModule(path);
+        };
+
+        // Helper to set current module before loading a script
+        window.__setModule = function(path) {
+            window.__currentModule = path;
+            window.exports = window.__ensureModule(path);
+        };
+
+        // Initialize the main calc module and calc global
+        window.calc = window.__ensureModule('./index');
+        window.__setModule('./index');
     </script>
+    <script>__setModule('./util');</script>
     <script type="text/javascript" src="./calc/util.js?"></script>
+    <script>__setModule('./stats');</script>
     <script type="text/javascript" src="./calc/stats.js?"></script>
+    <script>__setModule('./data/species');</script>
     <script type="text/javascript" src="./calc/data/species.js?"></script>
     <script type="text/javascript" src="./js/data/sets/gen9.js?"></script>
     <script type="text/javascript" src="./js/data/sets/gen8.js?"></script>
@@ -933,26 +986,47 @@
     <script type="text/javascript" src="./js/data/sets/gen3.js?"></script>
     <script type="text/javascript" src="./js/data/sets/gen2.js?"></script>
     <script type="text/javascript" src="./js/data/sets/gen1.js?"></script>
+    <script>__setModule('./data/types');</script>
     <script type="text/javascript" src="./calc/data/types.js?"></script>
+    <script>__setModule('./data/natures');</script>
     <script type="text/javascript" src="./calc/data/natures.js?"></script>
+    <script>__setModule('./data/abilities');</script>
     <script type="text/javascript" src="./calc/data/abilities.js?"></script>
+    <script>__setModule('./data/moves');</script>
     <script type="text/javascript" src="./calc/data/moves.js?"></script>
+    <script>__setModule('./data/items');</script>
     <script type="text/javascript" src="./calc/data/items.js?"></script>
+    <script>__setModule('./data/index');</script>
     <script type="text/javascript" src="./calc/data/index.js?"></script>
+    <script>__setModule('./move');</script>
     <script type="text/javascript" src="./calc/move.js?"></script>
+    <script>__setModule('./pokemon');</script>
     <script type="text/javascript" src="./calc/pokemon.js?"></script>
+    <script>__setModule('./field');</script>
     <script type="text/javascript" src="./calc/field.js?"></script>
+    <script>__setModule('./items');</script>
     <script type="text/javascript" src="./calc/items.js?"></script>
+    <script>__setModule('./mechanics/util');</script>
     <script type="text/javascript" src="./calc/mechanics/util.js?"></script>
+    <script>__setModule('./mechanics/gen789');</script>
     <script type="text/javascript" src="./calc/mechanics/gen789.js?"></script>
+    <script>__setModule('./mechanics/gen56');</script>
     <script type="text/javascript" src="./calc/mechanics/gen56.js?"></script>
+    <script>__setModule('./mechanics/gen4');</script>
     <script type="text/javascript" src="./calc/mechanics/gen4.js?"></script>
+    <script>__setModule('./mechanics/gen3');</script>
     <script type="text/javascript" src="./calc/mechanics/gen3.js?"></script>
+    <script>__setModule('./mechanics/gen12');</script>
     <script type="text/javascript" src="./calc/mechanics/gen12.js?"></script>
+    <script>__setModule('./calc');</script>
     <script type="text/javascript" src="./calc/calc.js?"></script>
+    <script>__setModule('./desc');</script>
     <script type="text/javascript" src="./calc/desc.js?"></script>
+    <script>__setModule('./result');</script>
     <script type="text/javascript" src="./calc/result.js?"></script>
+    <script>__setModule('./adaptable');</script>
     <script type="text/javascript" src="./calc/adaptable.js?"></script>
+    <script>__setModule('./index');</script>
     <script type="text/javascript" src="./calc/index.js?"></script>
     <script type="text/javascript" src="./js/shared_controls.js?"></script>
     <script type="text/javascript" src="./js/honkalculate_controls.js?"></script>

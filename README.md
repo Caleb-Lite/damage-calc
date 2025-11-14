@@ -129,9 +129,11 @@ use an alternative data layer such as [`@pkmn/data`][9]. You must load your data
 
 ## UI
 
-The [UI layer][2] is currently is written in vanilla JavaScript and HTML. To view the UI locally you
-first must install dependencies by running `npm install` at the top level and without `calc/`. This
-should create a `node_modules/` folder under both the root directory and under `calc/`:
+The [UI layer][2] is a fully static single-page application written in vanilla JavaScript and HTML.
+No server is required - the damage calculator runs entirely in the browser.
+
+To view the UI locally, first install dependencies by running `npm install` at the top level and
+within `calc/`. This should create a `node_modules/` folder under both the root directory and under `calc/`:
 
 ```sh
 $ npm install
@@ -141,14 +143,19 @@ $ cd calc && npm install
 Next, run `node build` from the root directory of your clone of this repository. This should
 run `npm run compile` in the `calc/` subdirectory to compile the `@smogon/calc` package from
 TypeScript to JavaScript that can be run in the browser, and then compile the 'templated' HTML
-and copy everything into the top-level `dist/` folder. To then view the UI, open `dist/index.html` -
-simply double-clicking on the file from your operating system's file manager UI should open it in
-your default browser.
+and copy everything into the top-level `dist/` folder. To then view the UI, simply open `dist/index.html`
+in your browser - double-clicking on the file from your operating system's file manager should open
+it in your default browser.
 
 ```sh
 $ node build
 $ open dist/index.html # open works on macOS, simply double-clicking the file on Windows/macOS works
 ```
+
+The calculator supports three modes accessible via the mode selector:
+- **One vs One**: Standard single Pokémon damage calculation
+- **One vs All**: Calculate damage from one attacker against all Pokémon in selected tiers
+- **All vs One**: Calculate damage from all Pokémon in selected tiers against one defender
 
 **If you make changes to anything in `calc/`, you must run `node build` from the top level to
 compile the files and copy them into `dist/` again. If you make changes to the HTML or JavaScript in

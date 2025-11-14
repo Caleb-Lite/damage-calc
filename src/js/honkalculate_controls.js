@@ -245,7 +245,7 @@ $(".mode").change(function () {
 	} else {
 		params.set('mode', modeId);
 	}
-	window.location.replace('honkalculate' + linkExtension + (params.toString() ? '?' + params : ''));
+	window.location.replace(window.location.pathname + (params.toString() ? '?' + params : ''));
 });
 
 $(".tiers label").mouseup(function () {

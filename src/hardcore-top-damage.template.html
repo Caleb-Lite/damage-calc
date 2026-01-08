@@ -109,7 +109,7 @@
 <script type="text/javascript">
     (function () {
         var calcBase = window.location.pathname.indexOf('/src/') !== -1 ? '../calc/dist/' : './calc/';
-        var scripts = [
+        var calcScripts = [
             'util.js',
             'stats.js',
             'data/species.js',
@@ -135,13 +135,38 @@
             'adaptable.js',
             'index.js',
         ];
-        for (var i = 0; i < scripts.length; i++) {
-            document.write('<script type="text/javascript" src="' + calcBase + scripts[i] + '"><\\/script>');
+
+        function loadScript(src, onLoad) {
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = src;
+            script.onload = onLoad;
+            script.onerror = function () {
+                console.error('Failed to load script:', src);
+            };
+            document.body.appendChild(script);
         }
+
+        function loadSequential(scripts, basePath, done) {
+            if (!scripts.length) {
+                done();
+                return;
+            }
+            var next = scripts.shift();
+            loadScript(basePath + next, function () {
+                loadSequential(scripts, basePath, done);
+            });
+        }
+
+        function loadAppScripts() {
+            loadScript('./js/data/sets/hardcore.js', function () {
+                loadScript('./js/hardcore_top_damage.js');
+            });
+        }
+
+        loadSequential(calcScripts.slice(), calcBase, loadAppScripts);
     })();
 </script>
-<script type="text/javascript" src="./js/data/sets/hardcore.js"></script>
-<script type="text/javascript" src="./js/hardcore_top_damage.js"></script>
 
 </body>
 

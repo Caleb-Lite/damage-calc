@@ -67,3 +67,4 @@ makeCachebuster('dist/index.template.html', 'dist/index.html');
 makeCachebuster('dist/randoms.template.html', 'dist/randoms.html');
 makeCachebuster('dist/normal.template.html', 'dist/normal.html');
 makeCachebuster('dist/hardcore.template.html', 'dist/hardcore.html');
+makeCachebuster('dist/hardcore-top-damage.template.html', 'dist/hardcore-top-damage.html');

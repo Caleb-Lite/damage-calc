@@ -108,54 +108,26 @@
 </script>
 <script type="text/javascript">
     (function () {
-        var calcBase = window.location.pathname.indexOf('/src/') !== -1 ? '../calc/dist/' : './calc/';
-        var calcScripts = [
-            'util.js',
-            'stats.js',
-            'data/species.js',
-            'data/types.js',
-            'data/natures.js',
-            'data/abilities.js',
-            'data/moves.js',
-            'data/items.js',
-            'data/index.js',
-            'move.js',
-            'pokemon.js',
-            'field.js',
-            'items.js',
-            'mechanics/util.js',
-            'mechanics/gen789.js',
-            'mechanics/gen56.js',
-            'mechanics/gen4.js',
-            'mechanics/gen3.js',
-            'mechanics/gen12.js',
-            'calc.js',
-            'desc.js',
-            'result.js',
-            'adaptable.js',
-            'index.js',
-        ];
+        var isSrcPath = window.location.pathname.indexOf('/src/') !== -1;
+        var candidateBases = isSrcPath
+            ? ['../calc/dist/', '../node_modules/@smogon/calc/dist/']
+            : ['./calc/'];
 
-        function loadScript(src, onLoad) {
+        function loadScript(src, onLoad, onError) {
             var script = document.createElement('script');
             script.type = 'text/javascript';
             script.src = src;
             script.onload = onLoad;
-            script.onerror = function () {
+            script.onerror = onError || function () {
                 console.error('Failed to load script:', src);
             };
             document.body.appendChild(script);
         }
 
-        function loadSequential(scripts, basePath, done) {
-            if (!scripts.length) {
-                done();
-                return;
-            }
-            var next = scripts.shift();
-            loadScript(basePath + next, function () {
-                loadSequential(scripts, basePath, done);
-            });
+        function loadCalcBundle(basePath, done, onError) {
+            loadScript(basePath + 'data/production.min.js', function () {
+                loadScript(basePath + 'production.min.js', done, onError);
+            }, onError);
         }
 
         function loadAppScripts() {
@@ -164,7 +136,18 @@
             });
         }
 
-        loadSequential(calcScripts.slice(), calcBase, loadAppScripts);
+        function tryBases(bases) {
+            if (!bases.length) {
+                console.error('Failed to load calc bundle from all local paths.');
+                return;
+            }
+            var base = bases.shift();
+            loadCalcBundle(base, loadAppScripts, function () {
+                tryBases(bases);
+            });
+        }
+
+        tryBases(candidateBases.slice());
     })();
 </script>
 

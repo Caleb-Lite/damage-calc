@@ -70,7 +70,22 @@
         <fieldset class="poke-info">
             <legend align="center">Hardcore Top Damage Rankings</legend>
             <p class="small-text">All calculations assume level 100, max damage rolls, and no field effects.</p>
+            <p class="small-text" id="setdex-note"></p>
             <div class="info-group top">
+                <div>
+                    <label for="generation-select">Generation</label>
+                    <select id="generation-select">
+                        <option value="1">Gen 1</option>
+                        <option value="2">Gen 2</option>
+                        <option value="3">Gen 3</option>
+                        <option value="4">Gen 4</option>
+                        <option value="5">Gen 5</option>
+                        <option value="6">Gen 6</option>
+                        <option value="7">Gen 7</option>
+                        <option value="8">Gen 8</option>
+                        <option value="9">Gen 9</option>
+                    </select>
+                </div>
                 <div>
                     <label for="defender-select">Defender set</label>
                     <select id="defender-select"></select>
@@ -168,6 +183,18 @@
 <script type="text/javascript" src="./calc/result.js?"></script>
 <script type="text/javascript" src="./calc/index.js?"></script>
 <script type="text/javascript" src="./js/data/sets/hardcore.js?"></script>
+<script type="text/javascript">
+    window.SETDEX_HARDCORE = window.SETDEX_SV;
+</script>
+<script type="text/javascript" src="./js/data/sets/gen1.js?"></script>
+<script type="text/javascript" src="./js/data/sets/gen2.js?"></script>
+<script type="text/javascript" src="./js/data/sets/gen3.js?"></script>
+<script type="text/javascript" src="./js/data/sets/gen4.js?"></script>
+<script type="text/javascript" src="./js/data/sets/gen5.js?"></script>
+<script type="text/javascript" src="./js/data/sets/gen6.js?"></script>
+<script type="text/javascript" src="./js/data/sets/gen7.js?"></script>
+<script type="text/javascript" src="./js/data/sets/gen8.js?"></script>
+<script type="text/javascript" src="./js/data/sets/gen9.js?"></script>
 <script type="text/javascript" src="./js/hardcore_top_damage.js"></script>
 
 </body>

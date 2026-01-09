@@ -140,11 +140,10 @@ var HARDCORE_TOP_DAMAGE = (function () {
         };
     }
 
-    function populateDefenderOptions(defenderSelect, setdex, generation) {
-        defenderSelect.innerHTML = '';
+    function buildDefenderIndex(setdex, generation) {
         var pokemonNames = Object.keys(setdex).sort();
-        var defaultValue = 'Clodsire||Leader Misty';
         var speciesIdCache = {};
+        var entries = [];
         pokemonNames.forEach(function (pokemon) {
             var cachedId = speciesIdCache[pokemon];
             if (!cachedId) {
@@ -153,24 +152,87 @@ var HARDCORE_TOP_DAMAGE = (function () {
             }
             if (!generation.species.get(cachedId)) return;
             var setNames = Object.keys(setdex[pokemon]).sort();
-            var optGroup = document.createElement('optgroup');
-            optGroup.label = pokemon;
             setNames.forEach(function (setName) {
-                var option = document.createElement('option');
-                option.value = pokemon + '||' + setName;
-                option.textContent = pokemon + ' (' + setName + ')';
-                optGroup.appendChild(option);
+                entries.push({
+                    id: pokemon + '||' + setName,
+                    pokemon: pokemon,
+                    setName: setName,
+                });
             });
-            defenderSelect.appendChild(optGroup);
         });
-        if (defenderSelect.querySelector('option[value="' + defaultValue + '"]')) {
-            defenderSelect.value = defaultValue;
-        } else {
-            var firstOption = defenderSelect.querySelector('option');
-            if (firstOption) {
-                defenderSelect.value = firstOption.value;
+        return entries;
+    }
+
+    function getDefenderOption(entry) {
+        return {
+            id: entry.id,
+            text: entry.pokemon + ' (' + entry.setName + ')',
+            pokemon: entry.pokemon,
+            setName: entry.setName,
+        };
+    }
+
+    function matchesDefenderEntry(entry, term) {
+        if (!term) return true;
+        var pokemonName = entry.pokemon.toUpperCase();
+        var setName = entry.setName.toUpperCase();
+        return term.toUpperCase().split(' ').every(function (part) {
+            return pokemonName.indexOf(part) === 0
+                || pokemonName.indexOf('-' + part) >= 0
+                || pokemonName.indexOf(' ' + part) >= 0
+                || setName.indexOf(part) === 0
+                || setName.indexOf('-' + part) >= 0
+                || setName.indexOf(' ' + part) >= 0;
+        });
+    }
+
+    function setDefenderSelection(defenderSelect, entry) {
+        if (!entry) return;
+        defenderSelect.innerHTML = '';
+        var option = document.createElement('option');
+        option.value = entry.id;
+        option.textContent = entry.pokemon + ' (' + entry.setName + ')';
+        option.selected = true;
+        defenderSelect.appendChild(option);
+    }
+
+    function initDefenderSelect(defenderSelect, defenderIndex, defaultValue) {
+        var defaultEntry = defenderIndex.find(function (entry) {
+            return entry.id === defaultValue;
+        }) || defenderIndex[0];
+        setDefenderSelection(defenderSelect, defaultEntry);
+        $(defenderSelect).select2({
+            formatResult: function (entry) {
+                return entry.text;
+            },
+            formatSelection: function (entry) {
+                return entry.text;
+            },
+            query: function (query) {
+                var pageSize = 30;
+                var results = [];
+                for (var i = 0; i < defenderIndex.length; i++) {
+                    var entry = defenderIndex[i];
+                    if (matchesDefenderEntry(entry, query.term || '')) {
+                        results.push(getDefenderOption(entry));
+                    }
+                }
+                query.callback({
+                    results: results.slice((query.page - 1) * pageSize, query.page * pageSize),
+                    more: results.length >= query.page * pageSize
+                });
+            },
+            initSelection: function (element, callback) {
+                var entry = defaultEntry;
+                var value = element.val();
+                if (value) {
+                    entry = defenderIndex.find(function (option) {
+                        return option.id === value;
+                    }) || defaultEntry;
+                }
+                callback(entry ? getDefenderOption(entry) : null);
             }
-        }
+        });
     }
 
     function parseDefenderSelection(value) {
@@ -284,7 +346,8 @@ var HARDCORE_TOP_DAMAGE = (function () {
         var currentSetdexInfo = mergeSetdexSources();
         var currentSetdex = currentSetdexInfo.setdex;
         var currentGeneration = GEN9;
-        populateDefenderOptions(defenderSelect, currentSetdex, currentGeneration);
+        var defenderIndex = buildDefenderIndex(currentSetdex, currentGeneration);
+        initDefenderSelect(defenderSelect, defenderIndex, 'Clodsire||Leader Misty');
         setdexNote.textContent = 'Using all gens ' + currentSetdexInfo.label + ' setdex with Gen 9 mechanics.';
         var tableHead = resultsTable.querySelector('thead');
         if (tableHead) {

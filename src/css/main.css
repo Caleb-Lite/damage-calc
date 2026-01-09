@@ -175,6 +175,26 @@ th {
     position: relative;
     top: -5px;
 }
+.hardcore-top-damage-page .hardcore-top-damage-header {
+    text-align: center;
+}
+.hardcore-top-damage-page .hardcore-top-damage-header .title-text {
+    display: block;
+    margin-right: 0;
+}
+.hardcore-top-damage-page .hardcore-top-damage-header .modeSelection {
+    display: inline-block;
+}
+.hardcore-top-damage-page .panel {
+    float: none;
+    display: block;
+    text-align: center;
+}
+.hardcore-top-damage-page .panel .poke-info {
+    float: none;
+    display: inline-block;
+    text-align: left;
+}
 .main-title-text {
     top: -10px;
 }

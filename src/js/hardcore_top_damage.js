@@ -56,7 +56,9 @@ var HARDCORE_TOP_DAMAGE = (function () {
             setNames.forEach(function (setName) {
                 var option = document.createElement('option');
                 option.value = pokemon + '||' + setName;
-                option.textContent = setName;
+                option.textContent = (pokemon === 'Clodsire' && setName === 'Leader Misty')
+                    ? 'Clodsire (Leader Misty)'
+                    : setName;
                 optGroup.appendChild(option);
             });
             defenderSelect.appendChild(optGroup);
@@ -121,8 +123,12 @@ var HARDCORE_TOP_DAMAGE = (function () {
         }).slice(0, MAX_RESULTS);
     }
 
-    function renderResults(tableBody, status, results) {
+    function renderResults(table, tableBody, status, results) {
         tableBody.innerHTML = '';
+        var tableHead = table.querySelector('thead');
+        if (tableHead) {
+            tableHead.style.display = results.length ? '' : 'none';
+        }
         results.forEach(function (result) {
             var row = document.createElement('tr');
             var pokemonCell = document.createElement('td');
@@ -155,13 +161,18 @@ var HARDCORE_TOP_DAMAGE = (function () {
     function init() {
         var defenderSelect = document.getElementById('defender-select');
         var calculateButton = document.getElementById('calculate-button');
+        var resultsTable = document.getElementById('results-table');
         var resultsTableBody = document.querySelector('#results-table tbody');
         var resultsStatus = document.getElementById('results-status');
-        if (!defenderSelect || !calculateButton || !resultsTableBody || !resultsStatus) return;
+        if (!defenderSelect || !calculateButton || !resultsTable || !resultsTableBody || !resultsStatus) return;
 
         var setdex = typeof SETDEX_SV !== 'undefined' ? SETDEX_SV : {};
         var generation = calc.Generations.get(GEN);
         populateDefenderOptions(defenderSelect, setdex);
+        var tableHead = resultsTable.querySelector('thead');
+        if (tableHead) {
+            tableHead.style.display = 'none';
+        }
 
         calculateButton.addEventListener('click', function () {
             var selectedValue = defenderSelect.value;
@@ -172,7 +183,7 @@ var HARDCORE_TOP_DAMAGE = (function () {
             resultsStatus.textContent = 'Calculating...';
             var defender = buildPokemon(generation, defenderChoice.pokemon, defenderSet);
             var results = calculateTopDamage(defender, setdex, generation);
-            renderResults(resultsTableBody, resultsStatus, results);
+            renderResults(resultsTable, resultsTableBody, resultsStatus, results);
         });
     }
 

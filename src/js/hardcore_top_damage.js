@@ -97,6 +97,8 @@ var HARDCORE_TOP_DAMAGE = (function () {
     }
 
     function buildPokemon(generation, name, set) {
+        var species = generation.species.get(calc.toID(name));
+        if (!species) return null;
         return new calc.Pokemon(generation, name, {
             level: DEFAULT_LEVEL,
             ability: set.ability,
@@ -108,11 +110,12 @@ var HARDCORE_TOP_DAMAGE = (function () {
         });
     }
 
-    function populateDefenderOptions(defenderSelect, setdex) {
+    function populateDefenderOptions(defenderSelect, setdex, generation) {
         defenderSelect.innerHTML = '';
         var pokemonNames = Object.keys(setdex).sort();
         var defaultValue = 'Clodsire||Leader Misty';
         pokemonNames.forEach(function (pokemon) {
+            if (!generation.species.get(calc.toID(pokemon))) return;
             var setNames = Object.keys(setdex[pokemon]).sort();
             var optGroup = document.createElement('optgroup');
             optGroup.label = pokemon;
@@ -193,6 +196,7 @@ var HARDCORE_TOP_DAMAGE = (function () {
                 var set = setdex[pokemon][setName];
                 if (!set.moves || !set.moves.length) return;
                 var attacker = buildPokemon(generation, pokemon, set);
+                if (!attacker) return;
                 var item = normalizeItem(set.item);
                 var bestMove = null;
                 set.moves.forEach(function (moveName) {
@@ -280,7 +284,7 @@ var HARDCORE_TOP_DAMAGE = (function () {
         var currentSetdexInfo = resolveSetdex(currentGen);
         var currentSetdex = currentSetdexInfo.setdex;
         var currentGeneration = calc.Generations.get(currentGen);
-        populateDefenderOptions(defenderSelect, currentSetdex);
+        populateDefenderOptions(defenderSelect, currentSetdex, currentGeneration);
         setdexNote.textContent = 'Using Gen ' + currentGen + ' ' + currentSetdexInfo.label + ' setdex.';
         var tableHead = resultsTable.querySelector('thead');
         if (tableHead) {
@@ -295,7 +299,7 @@ var HARDCORE_TOP_DAMAGE = (function () {
             currentSetdexInfo = resolveSetdex(currentGen);
             currentSetdex = currentSetdexInfo.setdex;
             currentGeneration = calc.Generations.get(currentGen);
-            populateDefenderOptions(defenderSelect, currentSetdex);
+            populateDefenderOptions(defenderSelect, currentSetdex, currentGeneration);
             setdexNote.textContent = 'Using Gen ' + currentGen + ' ' + currentSetdexInfo.label + ' setdex.';
             resultsStatus.textContent = 'Choose a defender and click Calculate.';
             resultsTableBody.innerHTML = '';
@@ -312,6 +316,14 @@ var HARDCORE_TOP_DAMAGE = (function () {
             if (!defenderSet) return;
             resultsStatus.textContent = 'Calculating...';
             var defender = buildPokemon(currentGeneration, defenderChoice.pokemon, defenderSet);
+            if (!defender) {
+                resultsStatus.textContent = 'Defender not available in selected generation.';
+                resultsTableBody.innerHTML = '';
+                if (tableHead) {
+                    tableHead.style.display = 'none';
+                }
+                return;
+            }
             var results = calculateTopDamage(defender, currentSetdex, currentGeneration);
             renderResults(resultsTable, resultsTableBody, resultsStatus, results);
         });

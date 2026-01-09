@@ -99,6 +99,8 @@
     <script type="text/javascript" src="./js/dark-theme-toggle.js"></script>
 </div>
 
+<script type="text/javascript" src="./js/vendor/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="./js/vendor/select2/select2.min.js"></script>
 <script type="text/javascript">
     this.__createBinding = function(o, m, k) {
         o[k] = m[k];
@@ -106,50 +108,31 @@
     var calc = exports = {};
     function require() { return exports };
 </script>
-<script type="text/javascript">
-    (function () {
-        var isSrcPath = window.location.pathname.indexOf('/src/') !== -1;
-        var candidateBases = isSrcPath
-            ? ['../calc/dist/', '../node_modules/@smogon/calc/dist/']
-            : ['./calc/'];
-
-        function loadScript(src, onLoad, onError) {
-            var script = document.createElement('script');
-            script.type = 'text/javascript';
-            script.src = src;
-            script.onload = onLoad;
-            script.onerror = onError || function () {
-                console.error('Failed to load script:', src);
-            };
-            document.body.appendChild(script);
-        }
-
-        function loadCalcBundle(basePath, done, onError) {
-            loadScript(basePath + 'data/production.min.js', function () {
-                loadScript(basePath + 'production.min.js', done, onError);
-            }, onError);
-        }
-
-        function loadAppScripts() {
-            loadScript('./js/data/sets/hardcore.js', function () {
-                loadScript('./js/hardcore_top_damage.js');
-            });
-        }
-
-        function tryBases(bases) {
-            if (!bases.length) {
-                console.error('Failed to load calc bundle from all local paths.');
-                return;
-            }
-            var base = bases.shift();
-            loadCalcBundle(base, loadAppScripts, function () {
-                tryBases(bases);
-            });
-        }
-
-        tryBases(candidateBases.slice());
-    })();
-</script>
+<script type="text/javascript" src="./calc/util.js?"></script>
+<script type="text/javascript" src="./calc/stats.js?"></script>
+<script type="text/javascript" src="./calc/data/species.js?"></script>
+<script type="text/javascript" src="./calc/data/types.js?"></script>
+<script type="text/javascript" src="./calc/data/natures.js?"></script>
+<script type="text/javascript" src="./calc/data/abilities.js?"></script>
+<script type="text/javascript" src="./calc/data/moves.js?"></script>
+<script type="text/javascript" src="./calc/data/items.js?"></script>
+<script type="text/javascript" src="./calc/data/index.js?"></script>
+<script type="text/javascript" src="./calc/move.js?"></script>
+<script type="text/javascript" src="./calc/pokemon.js?"></script>
+<script type="text/javascript" src="./calc/field.js?"></script>
+<script type="text/javascript" src="./calc/items.js?"></script>
+<script type="text/javascript" src="./calc/mechanics/util.js?"></script>
+<script type="text/javascript" src="./calc/mechanics/gen789.js?"></script>
+<script type="text/javascript" src="./calc/mechanics/gen56.js?"></script>
+<script type="text/javascript" src="./calc/mechanics/gen4.js?"></script>
+<script type="text/javascript" src="./calc/mechanics/gen3.js?"></script>
+<script type="text/javascript" src="./calc/mechanics/gen12.js?"></script>
+<script type="text/javascript" src="./calc/calc.js?"></script>
+<script type="text/javascript" src="./calc/desc.js?"></script>
+<script type="text/javascript" src="./calc/result.js?"></script>
+<script type="text/javascript" src="./calc/index.js?"></script>
+<script type="text/javascript" src="./js/data/sets/hardcore.js?"></script>
+<script type="text/javascript" src="./js/hardcore_top_damage.js"></script>
 
 </body>
 

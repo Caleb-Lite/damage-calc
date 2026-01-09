@@ -253,6 +253,11 @@ $(".mode").change(function () {
 		params.delete('mode');
 		params = '' + params;
 		window.location.replace('oms' + linkExtension + (params.length ? '?' + params : ''));
+	} else if ($("#hardcore-top-damage").prop("checked")) {
+		var params = new URLSearchParams(window.location.search);
+		params.delete('mode');
+		params = '' + params;
+		window.location.replace('hardcore-top-damage' + linkExtension + (params.length ? '?' + params : ''));
 	} else {
 		var params = new URLSearchParams(window.location.search);
 		params.set('mode', $(this).attr("id"));
@@ -320,6 +325,8 @@ $(document).ready(function () {
 	if (window.mode) {
 		if (window.mode === "randoms") {
 			window.location.replace("randoms" + linkExtension + "?" + params);
+		} else if (window.mode === "hardcore-top-damage") {
+			window.location.replace("hardcore-top-damage" + linkExtension + "?" + params);
 		} else if (window.mode !== "one-vs-all" && window.mode !== "all-vs-one") {
 			window.location.replace("index" + linkExtension + "?" + params);
 		}

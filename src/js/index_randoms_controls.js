@@ -174,6 +174,8 @@ $(".mode").change(function () {
 		window.location.replace('normal' + linkExtension + '?' + params);
 	} else if (mode === 'hardcore') {
 		window.location.replace('hardcore' + linkExtension + '?' + params);
+	} else if (mode === 'hardcore-top-damage') {
+		window.location.replace('hardcore-top-damage' + linkExtension + '?' + params);
 	} else if (mode === "oms") {
 		window.location.replace('oms' + linkExtension);
 	} else {
@@ -189,7 +191,7 @@ $(document).ready(function () {
 	var params = new URLSearchParams(window.location.search);
 	var m = params.get('mode');
 	if (m) {
-		if (m !== 'one-vs-one' && m !== 'randoms' && m !== 'normal' && m !== 'hardcore') {
+		if (m !== 'one-vs-one' && m !== 'randoms' && m !== 'normal' && m !== 'hardcore' && m !== 'hardcore-top-damage') {
 			window.location.replace('honkalculate' + linkExtension + '?' + params);
 		} else {
 			if ($('#randoms').prop('checked')) {
@@ -199,6 +201,8 @@ $(document).ready(function () {
 					window.location.replace('normal' + linkExtension + '?' + params);
 				} else if (m === 'hardcore') {
 					window.location.replace('hardcore' + linkExtension + '?' + params);
+				} else if (m === 'hardcore-top-damage') {
+					window.location.replace('hardcore-top-damage' + linkExtension + '?' + params);
 				}
 			} else if ($('#normal').prop('checked')) {
 				if (m === 'one-vs-one') {
@@ -207,6 +211,8 @@ $(document).ready(function () {
 					window.location.replace('randoms' + linkExtension + '?' + params);
 				} else if (m === 'hardcore') {
 					window.location.replace('hardcore' + linkExtension + '?' + params);
+				} else if (m === 'hardcore-top-damage') {
+					window.location.replace('hardcore-top-damage' + linkExtension + '?' + params);
 				}
 			} else if ($('#hardcore').prop('checked')) {
 				if (m === 'one-vs-one') {
@@ -215,6 +221,8 @@ $(document).ready(function () {
 					window.location.replace('randoms' + linkExtension + '?' + params);
 				} else if (m === 'normal') {
 					window.location.replace('normal' + linkExtension + '?' + params);
+				} else if (m === 'hardcore-top-damage') {
+					window.location.replace('hardcore-top-damage' + linkExtension + '?' + params);
 				}
 			} else {
 				if (m === 'randoms') {
@@ -223,6 +231,8 @@ $(document).ready(function () {
 					window.location.replace('normal' + linkExtension + '?' + params);
 				} else if (m === 'hardcore') {
 					window.location.replace('hardcore' + linkExtension + '?' + params);
+				} else if (m === 'hardcore-top-damage') {
+					window.location.replace('hardcore-top-damage' + linkExtension + '?' + params);
 				}
 			}
 		}

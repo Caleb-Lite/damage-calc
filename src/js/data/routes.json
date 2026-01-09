@@ -33,21 +33,6 @@
     ]
   },
   {
-    "type": "route",
-    "name": "Pallet Town",
-    "encounters": [
-      "tentacool",
-      "binacle",
-      "barboach",
-      "carvanha",
-      "qwilfish",
-      "luvdisc",
-      "clamperl",
-      "whiscash",
-      "tentacruel"
-    ]
-  },
-  {
     "type": "gym",
     "name": "Oak's Laboratory",
     "value": "r1",

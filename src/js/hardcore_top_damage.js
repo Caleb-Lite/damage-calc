@@ -56,9 +56,7 @@ var HARDCORE_TOP_DAMAGE = (function () {
             setNames.forEach(function (setName) {
                 var option = document.createElement('option');
                 option.value = pokemon + '||' + setName;
-                option.textContent = (pokemon === 'Clodsire' && setName === 'Leader Misty')
-                    ? 'Clodsire (Leader Misty)'
-                    : setName;
+                option.textContent = pokemon + ' (' + setName + ')';
                 optGroup.appendChild(option);
             });
             defenderSelect.appendChild(optGroup);

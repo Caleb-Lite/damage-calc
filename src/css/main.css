@@ -195,6 +195,13 @@ th {
     display: inline-block;
     text-align: left;
 }
+.hardcore-top-damage-page .info-group.top > div + div {
+    padding-top: 0.75em;
+    text-align: center;
+}
+.hardcore-top-damage-page #calculate-button {
+    display: inline-block;
+}
 .main-title-text {
     top: -10px;
 }

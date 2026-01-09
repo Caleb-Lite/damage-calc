@@ -87,6 +87,10 @@ var HARDCORE_TOP_DAMAGE = (function () {
         return item === 'Eviolite' || item.indexOf('ite') === -1 ? item : '';
     }
 
+    function isHackmonSet(setName) {
+        return setName && setName.indexOf('Hackmon') !== -1;
+    }
+
     function buildPokemon(generation, name, set) {
         var species = generation.species.get(calc.toID(name));
         if (!species) return null;
@@ -145,6 +149,7 @@ var HARDCORE_TOP_DAMAGE = (function () {
             if (!generation.species.get(cachedId)) return;
             var setNames = Object.keys(setdex[pokemon]).sort();
             setNames.forEach(function (setName) {
+                if (isHackmonSet(setName)) return;
                 entries.push({
                     id: pokemon + '||' + setName,
                     pokemon: pokemon,
@@ -240,6 +245,7 @@ var HARDCORE_TOP_DAMAGE = (function () {
         var moveCache = {};
         Object.keys(setdex).forEach(function (pokemon) {
             Object.keys(setdex[pokemon]).forEach(function (setName) {
+                if (isHackmonSet(setName)) return;
                 var set = setdex[pokemon][setName];
                 if (!set.moves || !set.moves.length) return;
                 var attacker = buildPokemon(generation, pokemon, set);

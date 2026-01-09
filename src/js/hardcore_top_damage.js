@@ -96,7 +96,8 @@ var HARDCORE_TOP_DAMAGE = (function () {
                         species: attacker.name,
                     });
                     var result = calc.calculate(generation, attacker, defender, move, field);
-                    var maxDamage = result.range()[1] * move.hits;
+                    // calc.calculate already accounts for multi-hit totals in result.range().
+                    var maxDamage = result.range()[1];
                     if (!bestMove || maxDamage > bestMove.maxDamage) {
                         bestMove = {
                             move: moveName,

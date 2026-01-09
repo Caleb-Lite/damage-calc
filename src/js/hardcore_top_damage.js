@@ -239,11 +239,12 @@ var HARDCORE_TOP_DAMAGE = (function () {
         return value && value.length ? value : '—';
     }
 
-    function calculateTopDamage(defender, setdex, generation) {
+    function calculateTopDamage(defender, setdex, generation, allowedPokemonIds) {
         var field = new calc.Field();
         var results = [];
         var moveCache = {};
         Object.keys(setdex).forEach(function (pokemon) {
+            if (allowedPokemonIds && !allowedPokemonIds[calc.toID(pokemon)]) return;
             Object.keys(setdex[pokemon]).forEach(function (setName) {
                 if (isHackmonSet(setName)) return;
                 var set = setdex[pokemon][setName];
@@ -327,9 +328,69 @@ var HARDCORE_TOP_DAMAGE = (function () {
             : 'No results found for the selected defender.';
     }
 
+    function populateRouteSelect(routeSelect) {
+        if (!routeSelect) return false;
+        var routes = window.ROUTE_DATA && ROUTE_DATA.getResolvedRoutes
+            ? ROUTE_DATA.getResolvedRoutes()
+            : [];
+        if (!routes.length) return false;
+        routeSelect.innerHTML = '';
+        routes.forEach(function (route, index) {
+            if (!route || !route.name) return;
+            var option = document.createElement('option');
+            option.value = index;
+            option.textContent = route.name;
+            routeSelect.appendChild(option);
+        });
+        if (!routeSelect.options.length) return false;
+        routeSelect.disabled = false;
+        routeSelect.value = routeSelect.options[routeSelect.options.length - 1].value;
+        return true;
+    }
+
+    function initRouteSelect(routeSelect) {
+        if (!routeSelect) return;
+        routeSelect.disabled = true;
+        routeSelect.innerHTML = '<option>Loading routes...</option>';
+        if (populateRouteSelect(routeSelect)) return;
+        var attempts = 0;
+        var maxAttempts = 40;
+        var interval = setInterval(function () {
+            attempts += 1;
+            if (populateRouteSelect(routeSelect)) {
+                clearInterval(interval);
+                return;
+            }
+            if (attempts >= maxAttempts) {
+                clearInterval(interval);
+                routeSelect.innerHTML = '<option>Routes unavailable</option>';
+            }
+        }, 250);
+    }
+
+    function buildAllowedPokemonIds(routeSelect) {
+        if (!routeSelect || routeSelect.disabled) return null;
+        var routes = window.ROUTE_DATA && ROUTE_DATA.getResolvedRoutes
+            ? ROUTE_DATA.getResolvedRoutes()
+            : [];
+        var routeIndex = parseInt(routeSelect.value, 10);
+        if (!routes.length || isNaN(routeIndex) || routeIndex < 0) return null;
+        var allowed = {};
+        for (var i = 0; i <= routeIndex && i < routes.length; i++) {
+            var route = routes[i];
+            if (!route || !Array.isArray(route.encounters)) continue;
+            route.encounters.forEach(function (encounter) {
+                if (!encounter) return;
+                allowed[calc.toID(encounter)] = true;
+            });
+        }
+        return allowed;
+    }
+
     function init() {
         var defenderSelect = document.getElementById('defender-select');
         var calculateButton = document.getElementById('calculate-button');
+        var routeSelect = document.getElementById('route-select');
         var resultsTable = document.getElementById('results-table');
         var resultsTableBody = document.querySelector('#results-table tbody');
         var resultsStatus = document.getElementById('results-status');
@@ -341,6 +402,7 @@ var HARDCORE_TOP_DAMAGE = (function () {
         var currentGeneration = GEN9;
         var defenderIndex = buildDefenderIndex(currentSetdex, currentGeneration);
         initDefenderSelect(defenderSelect, defenderIndex, 'Clodsire||Leader Misty');
+        initRouteSelect(routeSelect);
         setdexNote.textContent = 'Using all gens ' + currentSetdexInfo.label + ' setdex with Gen 9 mechanics.';
         var tableHead = resultsTable.querySelector('thead');
         if (tableHead) {
@@ -363,7 +425,12 @@ var HARDCORE_TOP_DAMAGE = (function () {
                 }
                 return;
             }
-            var results = calculateTopDamage(defender, currentSetdex, currentGeneration);
+            var allowedPokemonIds = buildAllowedPokemonIds(routeSelect);
+            if (routeSelect && routeSelect.disabled) {
+                resultsStatus.textContent = 'Route data is still loading.';
+                return;
+            }
+            var results = calculateTopDamage(defender, currentSetdex, currentGeneration, allowedPokemonIds);
             renderResults(resultsTable, resultsTableBody, resultsStatus, results);
         });
     }

@@ -1,4 +1,4 @@
-var HARDCORE_TOP_DAMAGE = (function () {
+var MULTICALC = (function () {
     var DEFAULT_LEVEL = 100;
     var MAX_RESULTS = 30;
     var MAX_EVS_TOTAL = 510;
@@ -441,5 +441,5 @@ var HARDCORE_TOP_DAMAGE = (function () {
 })();
 
 document.addEventListener('DOMContentLoaded', function () {
-    HARDCORE_TOP_DAMAGE.init();
+    MULTICALC.init();
 });

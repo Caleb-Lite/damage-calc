@@ -175,31 +175,31 @@ th {
     position: relative;
     top: -5px;
 }
-.hardcore-top-damage-page .hardcore-top-damage-header {
+.multicalc-page .multicalc-header {
     text-align: center;
 }
-.hardcore-top-damage-page .hardcore-top-damage-header .title-text {
+.multicalc-page .multicalc-header .title-text {
     display: block;
     margin-right: 0;
 }
-.hardcore-top-damage-page .hardcore-top-damage-header .modeSelection {
+.multicalc-page .multicalc-header .modeSelection {
     display: inline-block;
 }
-.hardcore-top-damage-page .panel {
+.multicalc-page .panel {
     float: none;
     display: block;
     text-align: center;
 }
-.hardcore-top-damage-page .panel .poke-info {
+.multicalc-page .panel .poke-info {
     float: none;
     display: inline-block;
     text-align: left;
 }
-.hardcore-top-damage-page .info-group.top > div + div {
+.multicalc-page .info-group.top > div + div {
     padding-top: 0.75em;
     text-align: center;
 }
-.hardcore-top-damage-page #calculate-button {
+.multicalc-page #calculate-button {
     display: inline-block;
 }
 .main-title-text {

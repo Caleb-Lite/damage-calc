@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Hardcore Top Damage Rankings</title>
+    <title>Multicalc Top Damage Rankings</title>
     <link type="text/css" rel="stylesheet" href="./js/vendor/select2/select2.css" />
     <link type="text/css" rel="stylesheet" href="./css/main.css" />
     <link type="text/css" rel="stylesheet" href="./css/vendor/bootstrap.css" />
@@ -36,7 +36,7 @@
     </script>
 </head>
 
-<body class="dark-theme hardcore-top-damage-page">
+<body class="dark-theme multicalc-page">
 
 <nav><div class="header"><div class="header-inner">
     <ul class="nav">
@@ -53,22 +53,22 @@
 </div></div></nav>
 <div class="wrapper">
 
-    <div aria-label="Settings" role="region" class="hardcore-top-damage-header">
-        <span class="title-text">Hardcore Top Damage Rankings</span>
+    <div aria-label="Settings" role="region" class="multicalc-header">
+        <span class="title-text">Multicalc Top Damage Rankings</span>
         <span class="modeSelection" aria-labelledby="selectModeInstruction" role="radiogroup" title="Select the calculator's mode of function.">
             <span class="visually-hidden" id="selectModeInstruction">Select the calculator's mode of function.</span>
             <input class="mode visually-hidden" type="radio" name="mode" id="one-vs-one" /><label class="btn btn-left" for="one-vs-one">One vs One</label>
             <input class="mode visually-hidden" type="radio" name="mode" id="normal" /><label class="btn btn-mid" for="normal">Normal Mode</label>
             <input class="mode visually-hidden" type="radio" name="mode" id="hardcore" /><label class="btn btn-mid" for="hardcore">Hardcore Mode</label>
             <input class="mode visually-hidden" type="radio" name="mode" id="randoms" /><label class="btn btn-mid" for="randoms">Random Battles</label>
-            <input class="mode visually-hidden" type="radio" name="mode" id="hardcore-top-damage" checked="checked" /><label class="btn btn-right" for="hardcore-top-damage">Hardcore (Top Damage)</label>
+            <input class="mode visually-hidden" type="radio" name="mode" id="multicalc" checked="checked" /><label class="btn btn-right" for="multicalc">Multicalc</label>
         </span>
     </div>
     <hr />
 
     <div class="panel" aria-label="Top damage settings" role="region">
         <fieldset class="poke-info">
-            <legend align="center">Hardcore Top Damage Rankings</legend>
+            <legend align="center">Multicalc Top Damage Rankings</legend>
             <p class="small-text">All calculations assume level 100, max damage rolls, and no field effects.</p>
             <p class="small-text" id="setdex-note"></p>
             <div class="info-group top">
@@ -135,7 +135,7 @@
                     window.location.replace('hardcore' + linkExtension);
                 } else if (mode === 'oms') {
                     window.location.replace('oms' + linkExtension);
-                } else if (mode !== 'hardcore-top-damage') {
+                } else if (mode !== 'multicalc') {
                     window.location.replace('honkalculate' + linkExtension);
                 }
             });
@@ -187,7 +187,7 @@
 <script type="text/javascript" src="./js/data/sets/gen9.js?"></script>
 <script type="text/javascript" src="./js/route_name_resolver.js?"></script>
 <script type="text/javascript" src="./js/route_data.js?"></script>
-<script type="text/javascript" src="./js/hardcore_top_damage.js"></script>
+<script type="text/javascript" src="./js/multicalc.js"></script>
 
 </body>
 

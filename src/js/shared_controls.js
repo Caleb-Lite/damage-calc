@@ -1242,6 +1242,25 @@ var RANDDEX = [
 	typeof GEN9RANDOMBATTLE === 'undefined' ? {} : GEN9RANDOMBATTLE,
 ];
 var gen, genWasChanged, notation, pokedex, setdex, randdex, typeChart, moves, abilities, items, calcHP, calcStat, GENERATION;
+var routeEncounterFilter = null;
+
+function setRouteEncounterFilter(encounterNames) {
+	routeEncounterFilter = null;
+	if (!encounterNames || !encounterNames.length) return;
+	routeEncounterFilter = {};
+	for (var i = 0; i < encounterNames.length; i++) {
+		var encounter = encounterNames[i];
+		if (!encounter) continue;
+		routeEncounterFilter[calc.toID(encounter)] = true;
+	}
+}
+
+function shouldIncludeRouteEncounter(pokeName) {
+	if (!routeEncounterFilter) return true;
+	return !!routeEncounterFilter[calc.toID(pokeName)];
+}
+
+window.setRouteEncounterFilter = setRouteEncounterFilter;
 
 $(".gen").change(function () {
 	/*eslint-disable */
@@ -1362,6 +1381,7 @@ function getSetOptions(sets) {
 	var setOptions = [];
 	for (var i = 0; i < pokeNames.length; i++) {
 		var pokeName = pokeNames[i];
+		if (!shouldIncludeRouteEncounter(pokeName)) continue;
 		setOptions.push({
 			pokemon: pokeName,
 			text: pokeName

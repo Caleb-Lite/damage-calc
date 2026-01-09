@@ -188,12 +188,7 @@ var HARDCORE_TOP_DAMAGE = (function () {
 
     function setDefenderSelection(defenderSelect, entry) {
         if (!entry) return;
-        defenderSelect.innerHTML = '';
-        var option = document.createElement('option');
-        option.value = entry.id;
-        option.textContent = entry.pokemon + ' (' + entry.setName + ')';
-        option.selected = true;
-        defenderSelect.appendChild(option);
+        defenderSelect.value = entry.id;
     }
 
     function initDefenderSelect(defenderSelect, defenderIndex, defaultValue) {

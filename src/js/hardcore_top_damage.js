@@ -73,21 +73,13 @@ var HARDCORE_TOP_DAMAGE = (function () {
         return stats;
     }
 
-    function normalizeIVs(ivs) {
-        if (!ivs) return undefined;
-        var mapped = mapStats(ivs, 31);
+    function normalizeIVs() {
+        var mapped = mapStats(undefined, 31);
         return clampStatRange(mapped, 0, 31);
     }
 
-    function normalizeEVs(evs, generation) {
-        if (!evs) {
-            return generation.num >= 3 ? mapStats(undefined, 0) : undefined;
-        }
-        var mapped = mapStats(evs, 0);
-        if (generation.num >= 3) {
-            return clampEvs(mapped);
-        }
-        return mapped;
+    function normalizeEVs() {
+        return mapStats(undefined, 0);
     }
 
     function normalizeItem(item) {

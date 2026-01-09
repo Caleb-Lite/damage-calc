@@ -1,6 +1,5 @@
 var HARDCORE_TOP_DAMAGE = (function () {
     var DEFAULT_LEVEL = 100;
-    var DEFAULT_GEN = 9;
     var MAX_RESULTS = 30;
     var MAX_EVS_TOTAL = 510;
     var MAX_EVS_STAT = 252;
@@ -14,17 +13,17 @@ var HARDCORE_TOP_DAMAGE = (function () {
         spc: 'spa',
     };
     var statOrder = ['hp', 'atk', 'def', 'spa', 'spd', 'spe'];
-    var SETDEX = [
-        {},
-        typeof SETDEX_RBY === 'undefined' ? {} : SETDEX_RBY,
-        typeof SETDEX_GSC === 'undefined' ? {} : SETDEX_GSC,
-        typeof SETDEX_ADV === 'undefined' ? {} : SETDEX_ADV,
-        typeof SETDEX_DPP === 'undefined' ? {} : SETDEX_DPP,
-        typeof SETDEX_BW === 'undefined' ? {} : SETDEX_BW,
-        typeof SETDEX_XY === 'undefined' ? {} : SETDEX_XY,
-        typeof SETDEX_SM === 'undefined' ? {} : SETDEX_SM,
-        typeof SETDEX_SS === 'undefined' ? {} : SETDEX_SS,
-        typeof SETDEX_SV === 'undefined' ? {} : SETDEX_SV,
+    var GEN9 = calc.Generations.get(9);
+    var SETDEX_SOURCES = [
+        { gen: 1, label: 'Gen 1', setdex: typeof SETDEX_RBY === 'undefined' ? {} : SETDEX_RBY },
+        { gen: 2, label: 'Gen 2', setdex: typeof SETDEX_GSC === 'undefined' ? {} : SETDEX_GSC },
+        { gen: 3, label: 'Gen 3', setdex: typeof SETDEX_ADV === 'undefined' ? {} : SETDEX_ADV },
+        { gen: 4, label: 'Gen 4', setdex: typeof SETDEX_DPP === 'undefined' ? {} : SETDEX_DPP },
+        { gen: 5, label: 'Gen 5', setdex: typeof SETDEX_BW === 'undefined' ? {} : SETDEX_BW },
+        { gen: 6, label: 'Gen 6', setdex: typeof SETDEX_XY === 'undefined' ? {} : SETDEX_XY },
+        { gen: 7, label: 'Gen 7', setdex: typeof SETDEX_SM === 'undefined' ? {} : SETDEX_SM },
+        { gen: 8, label: 'Gen 8', setdex: typeof SETDEX_SS === 'undefined' ? {} : SETDEX_SS },
+        { gen: 9, label: 'Gen 9', setdex: typeof SETDEX_SV === 'undefined' ? {} : SETDEX_SV },
     ];
 
     function mapStats(stats, defaultValue) {
@@ -110,12 +109,49 @@ var HARDCORE_TOP_DAMAGE = (function () {
         });
     }
 
+    function getSetdexPreference() {
+        var params = new URLSearchParams(window.location.search);
+        return params.get('setdex') === 'standard' ? 'standard' : 'hardcore';
+    }
+
+    function mergeSetdexSources() {
+        var merged = {};
+        var preferredGen9Setdex = typeof SETDEX_HARDCORE !== 'undefined' && getSetdexPreference() === 'hardcore'
+            ? SETDEX_HARDCORE
+            : SETDEX_SOURCES[SETDEX_SOURCES.length - 1].setdex;
+        SETDEX_SOURCES.forEach(function (source) {
+            var setdex = source.gen === 9 ? preferredGen9Setdex : source.setdex;
+            Object.keys(setdex).forEach(function (pokemon) {
+                if (!merged[pokemon]) merged[pokemon] = {};
+                Object.keys(setdex[pokemon]).forEach(function (setName) {
+                    var targetName = setName;
+                    if (merged[pokemon][targetName]) {
+                        targetName = setName + ' (' + source.label + ')';
+                    }
+                    merged[pokemon][targetName] = setdex[pokemon][setName];
+                });
+            });
+        });
+        return {
+            setdex: merged,
+            label: preferredGen9Setdex === (typeof SETDEX_HARDCORE === 'undefined' ? {} : SETDEX_HARDCORE)
+                ? 'Hardcore'
+                : 'Standard',
+        };
+    }
+
     function populateDefenderOptions(defenderSelect, setdex, generation) {
         defenderSelect.innerHTML = '';
         var pokemonNames = Object.keys(setdex).sort();
         var defaultValue = 'Clodsire||Leader Misty';
+        var speciesIdCache = {};
         pokemonNames.forEach(function (pokemon) {
-            if (!generation.species.get(calc.toID(pokemon))) return;
+            var cachedId = speciesIdCache[pokemon];
+            if (!cachedId) {
+                cachedId = calc.toID(pokemon);
+                speciesIdCache[pokemon] = cachedId;
+            }
+            if (!generation.species.get(cachedId)) return;
             var setNames = Object.keys(setdex[pokemon]).sort();
             var optGroup = document.createElement('optgroup');
             optGroup.label = pokemon;
@@ -149,48 +185,10 @@ var HARDCORE_TOP_DAMAGE = (function () {
         return value && value.length ? value : '—';
     }
 
-    function getInitialGeneration() {
-        var params = new URLSearchParams(window.location.search);
-        var genParam = parseInt(params.get('gen'), 10);
-        if (Number.isFinite(genParam) && genParam >= 1 && genParam <= 9) return genParam;
-        return DEFAULT_GEN;
-    }
-
-    function getSetdexPreference() {
-        var params = new URLSearchParams(window.location.search);
-        return params.get('setdex') === 'standard' ? 'standard' : 'hardcore';
-    }
-
-    function updateUrlGeneration(gen) {
-        var params = new URLSearchParams(window.location.search);
-        if (gen === DEFAULT_GEN) {
-            params.delete('gen');
-        } else {
-            params.set('gen', gen);
-        }
-        var query = params.toString();
-        var newUrl = window.location.pathname + (query.length ? '?' + query : '');
-        if (window.history && window.history.replaceState) {
-            window.history.replaceState({}, document.title, newUrl);
-        }
-    }
-
-    function resolveSetdex(gen) {
-        var setdex = SETDEX[gen] || {};
-        var label = 'Standard';
-        if (gen === 9 && typeof SETDEX_HARDCORE !== 'undefined' && getSetdexPreference() === 'hardcore') {
-            setdex = SETDEX_HARDCORE;
-            label = 'Hardcore';
-        }
-        return {
-            setdex: setdex,
-            label: label,
-        };
-    }
-
     function calculateTopDamage(defender, setdex, generation) {
         var field = new calc.Field();
         var results = [];
+        var moveCache = {};
         Object.keys(setdex).forEach(function (pokemon) {
             Object.keys(setdex[pokemon]).forEach(function (setName) {
                 var set = setdex[pokemon][setName];
@@ -201,11 +199,17 @@ var HARDCORE_TOP_DAMAGE = (function () {
                 var bestMove = null;
                 set.moves.forEach(function (moveName) {
                     if (!moveName) return;
-                    var move = new calc.Move(generation, moveName, {
-                        ability: set.ability,
-                        item: item,
-                        species: attacker.name,
-                    });
+                    var cacheKey = moveName + '|' + (set.ability || '') + '|' + item + '|' + attacker.name;
+                    // Cache moves per attacker/item/ability to reduce repeated instantiation.
+                    var move = moveCache[cacheKey];
+                    if (!move) {
+                        move = new calc.Move(generation, moveName, {
+                            ability: set.ability,
+                            item: item,
+                            species: attacker.name,
+                        });
+                        moveCache[cacheKey] = move;
+                    }
                     var result = calc.calculate(generation, attacker, defender, move, field);
                     // calc.calculate already accounts for multi-hit totals in result.range().
                     var maxDamage = result.range()[1];
@@ -270,43 +274,22 @@ var HARDCORE_TOP_DAMAGE = (function () {
 
     function init() {
         var defenderSelect = document.getElementById('defender-select');
-        var generationSelect = document.getElementById('generation-select');
         var calculateButton = document.getElementById('calculate-button');
         var resultsTable = document.getElementById('results-table');
         var resultsTableBody = document.querySelector('#results-table tbody');
         var resultsStatus = document.getElementById('results-status');
         var setdexNote = document.getElementById('setdex-note');
-        if (!defenderSelect || !calculateButton || !resultsTable || !resultsTableBody || !resultsStatus || !generationSelect || !setdexNote) return;
+        if (!defenderSelect || !calculateButton || !resultsTable || !resultsTableBody || !resultsStatus || !setdexNote) return;
 
-        var currentGen = getInitialGeneration();
-        generationSelect.value = String(currentGen);
-
-        var currentSetdexInfo = resolveSetdex(currentGen);
+        var currentSetdexInfo = mergeSetdexSources();
         var currentSetdex = currentSetdexInfo.setdex;
-        var currentGeneration = calc.Generations.get(currentGen);
+        var currentGeneration = GEN9;
         populateDefenderOptions(defenderSelect, currentSetdex, currentGeneration);
-        setdexNote.textContent = 'Using Gen ' + currentGen + ' ' + currentSetdexInfo.label + ' setdex.';
+        setdexNote.textContent = 'Using all gens ' + currentSetdexInfo.label + ' setdex with Gen 9 mechanics.';
         var tableHead = resultsTable.querySelector('thead');
         if (tableHead) {
             tableHead.style.display = 'none';
         }
-
-        generationSelect.addEventListener('change', function () {
-            var nextGen = parseInt(generationSelect.value, 10);
-            if (!Number.isFinite(nextGen)) return;
-            currentGen = nextGen;
-            updateUrlGeneration(currentGen);
-            currentSetdexInfo = resolveSetdex(currentGen);
-            currentSetdex = currentSetdexInfo.setdex;
-            currentGeneration = calc.Generations.get(currentGen);
-            populateDefenderOptions(defenderSelect, currentSetdex, currentGeneration);
-            setdexNote.textContent = 'Using Gen ' + currentGen + ' ' + currentSetdexInfo.label + ' setdex.';
-            resultsStatus.textContent = 'Choose a defender and click Calculate.';
-            resultsTableBody.innerHTML = '';
-            if (tableHead) {
-                tableHead.style.display = 'none';
-            }
-        });
 
         calculateButton.addEventListener('click', function () {
             var selectedValue = defenderSelect.value;
@@ -317,7 +300,7 @@ var HARDCORE_TOP_DAMAGE = (function () {
             resultsStatus.textContent = 'Calculating...';
             var defender = buildPokemon(currentGeneration, defenderChoice.pokemon, defenderSet);
             if (!defender) {
-                resultsStatus.textContent = 'Defender not available in selected generation.';
+                resultsStatus.textContent = 'Defender not available with Gen 9 mechanics.';
                 resultsTableBody.innerHTML = '';
                 if (tableHead) {
                     tableHead.style.display = 'none';

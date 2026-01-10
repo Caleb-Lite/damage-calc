@@ -268,11 +268,13 @@ var MULTICALC = (function () {
                     }
                     var result = calc.calculate(generation, attacker, defender, move, field);
                     // calc.calculate already accounts for multi-hit totals in result.range().
-                    var maxDamage = result.range()[1];
-                    if (!bestMove || maxDamage > bestMove.maxDamage) {
+                    var minDamage = result.range()[0];
+                    var totalPower = move.bp * (move.hits || 1);
+                    if (!bestMove || minDamage > bestMove.minDamage) {
                         bestMove = {
                             move: moveName,
-                            maxDamage: maxDamage,
+                            minDamage: minDamage,
+                            totalPower: totalPower,
                         };
                     }
                 });
@@ -283,13 +285,14 @@ var MULTICALC = (function () {
                     ability: set.ability,
                     item: item,
                     move: bestMove.move,
-                    maxDamage: bestMove.maxDamage,
-                    maxPercent: (bestMove.maxDamage / defender.maxHP()) * 100,
+                    minDamage: bestMove.minDamage,
+                    minPercent: (bestMove.minDamage / defender.maxHP()) * 100,
+                    totalPower: bestMove.totalPower,
                 });
             });
         });
         return results.sort(function (a, b) {
-            return b.maxDamage - a.maxDamage;
+            return b.minDamage - a.minDamage;
         }).slice(0, MAX_RESULTS);
     }
 
@@ -314,11 +317,11 @@ var MULTICALC = (function () {
             row.appendChild(itemCell);
 
             var moveCell = document.createElement('td');
-            moveCell.textContent = result.move;
+            moveCell.textContent = result.move + ' (' + result.totalPower + ')';
             row.appendChild(moveCell);
 
             var damageCell = document.createElement('td');
-            damageCell.textContent = result.maxPercent.toFixed(1) + '%';
+            damageCell.textContent = result.minPercent.toFixed(1) + '%';
             row.appendChild(damageCell);
 
             tableBody.appendChild(row);
